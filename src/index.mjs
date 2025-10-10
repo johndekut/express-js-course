@@ -1,6 +1,6 @@
 import express, { request, response } from 'express';
 import { query, validationResult, body, matchedData, checkSchema} from 'express-validator';
-import createUserValidationSchemas from '../Utils/validation-schemas.mjs';
+import { createUserValidationSchemas , userQuerySchema } from '../Utils/validation-schemas.mjs';
 const app = express();
 app.use(express.json());//handles middleware
 
@@ -46,15 +46,14 @@ app.use(loggingMiddleware); //register the middleware globally for all routes an
 
 
 app.get('/api/users',
-  query('filter')
-    .isString()
-    .notEmpty()
-    .withMessage("must not be empty")
-    .isLength({ min: 3, max: 10 })
-    .withMessage("must be atleast 3-10 characters"),
+  checkSchema(userQuerySchema),
   (request, response) => {
     const result = validationResult(request); //collects all validation errors from above checks
     console.log(result);
+    
+    //if te result of the errors is not empty, present it as an array
+    if(!result.isEmpty()); 
+      return response.status(400).send({errors:result.array()});
     const { query: { filter, value } } = request;
 
     //when filters and values ar undefined

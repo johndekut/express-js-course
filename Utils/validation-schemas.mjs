@@ -1,4 +1,4 @@
- const createUserValidationSchemas= {
+ export const createUserValidationSchemas= {
   username: {
     isLength:{
       options:{
@@ -21,4 +21,21 @@
   }
 }
 
-export default createUserValidationSchemas
+export const userQuerySchema= {
+  filter: {
+    isString:{
+      errorMessage:"filter must be a string"
+    },
+    notEmpty:{
+      errorMessage:"filter must not be empty"
+    },
+    isLength:{
+      options:{
+        min:4,
+        max: 20
+      },
+      errorMessage:"filter must be atleast 4 characters and a max of 20"
+    }
+  }
+
+}
