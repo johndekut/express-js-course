@@ -19,7 +19,7 @@ const mockUsers = ([
   { id: 8, userName: "Steve", displayName: "kip" }
 ]);
 
-//the function below is made to reduce redundancy in getting userId
+//the function below is made to reduce redundancy in getting userId in the other methods
 const resolveUserIndexById = (request, response, next) => {
   const {
     params: { id }
@@ -38,7 +38,7 @@ const resolveUserIndexById = (request, response, next) => {
 
 const loggingMiddleware = (request, response, next) => {
   console.log(`${request.method}- ${request.url}`);
-  next();
+  next(); //ensures the second command is initiated
 };
 
 app.use(loggingMiddleware); //register the middleware globally for all routes and all http methods
