@@ -1,5 +1,5 @@
 import express, { request, response } from 'express';
-
+import { query, validationResult, body, matchedData} from 'express-validator';
 const app = express();
 app.use(express.json());//handles middleware
 
@@ -28,7 +28,7 @@ const resolveUserIndexById = (request, response, next) => {
   if (isNaN(parsedId)) return response.status(404).send('No matching data');
 
   //find the user index 
-  const findUserIndex = mockUsers.findIndex(user =>  user.id === parsedId);
+  const findUserIndex = mockUsers.findIndex(user => user.id === parsedId);
   if (findUserIndex === -1) return response.sendStatus(404);
   request.findUserIndex = findUserIndex;
   next();
@@ -44,18 +44,25 @@ const loggingMiddleware = (request, response, next) => {
 app.use(loggingMiddleware); //register the middleware globally for all routes and all http methods
 
 
-app.get('/api/users', (request, response) => {
-  console.log(request.query);
-  const { query: { filter, value } } = request;
+app.get('/api/users',
+  query('filter')
+    .isString()
+    .notEmpty()
+    .withMessage("must not be empty")
+    .isLength({ min: 3, max: 10 })
+    .withMessage("must be atleast 3-10 characters"),
+  (request, response) => {
+    const result = validationResult(request); //collects all validation errors from above checks
+    console.log(result);
+    const { query: { filter, value } } = request;
 
-  //when filters and values ar undefined
-  if (!filter && !value) return response.send(mockUsers);
-  "".includes()
-  if (filter && value) return response.send(
-    mockUsers.filter((user) => user[filter]).includes(value)
-  );
-  return response.send(mockUsers);
-});
+    //when filters and values ar undefined
+    if (!filter && !value) return response.send(mockUsers);
+    if (filter && value) return response.send(
+      mockUsers.filter((user) => user[filter]).includes(value)
+    );
+    return response.send(mockUsers);
+  });
 
 app.use(loggingMiddleware, (request, response, next) => {
   console.log('finished logging...');
@@ -63,18 +70,36 @@ app.use(loggingMiddleware, (request, response, next) => {
 });
 
 //post adds data
-app.post('/api/users', (request, response) => {
-  console.log(request.body);
-  //destructute const body= body.request;
-  const { body } = request;
-  const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
-  //...body copies the props from incoming body into newUser
-  mockUsers.push(newUser);//adds the newUser at the end of mockUsers
-  return response.status(201).send(newUser);
-  //return ensures the handler exits immediately after sending response
-})
+app.post('/api/users',
+  [
+  body("userName")
+    .notEmpty()
+    .withMessage("User name can not be empty")
+    .isLength({ min: 5, max: 32 })
+    .withMessage("user name must be atleast 5 characters and a max of 32")
+    .isString()
+    .withMessage("user name must be a string"),
+    body("displayName").notEmpty()
+  ],
+  (request, response) => {
+    const result = validationResult(request);
+    console.log(result);
 
-app.get("/api/users/:id",  (request, response) => {
+    if(!result.isEmpty())
+      return response.status(400).send({errors:result.array()});
+
+      const data = matchedData(request);
+      //above means, give me the request data that passed validation
+
+      console.log(data);
+    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...data};
+    //...body copies the props from incoming body into newUser
+    mockUsers.push(newUser);//adds the newUser at the end of mockUsers
+    return response.status(201).send(newUser);
+    //return ensures the handler exits immediately after sending response
+  })
+
+app.get("/api/users/:id", (request, response) => {
   console.log(request.params);
   const parsedId = parseInt(request.params.id);
   console.log(parsedId);
