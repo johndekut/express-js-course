@@ -1,5 +1,6 @@
 import express, { request, response } from 'express';
-import { query, validationResult, body, matchedData} from 'express-validator';
+import { query, validationResult, body, matchedData, checkSchema} from 'express-validator';
+import createUserValidationSchemas from '../Utils/validation-schemas.mjs';
 const app = express();
 app.use(express.json());//handles middleware
 
@@ -71,16 +72,7 @@ app.use(loggingMiddleware, (request, response, next) => {
 
 //post adds data
 app.post('/api/users',
-  [
-  body("userName")
-    .notEmpty()
-    .withMessage("User name can not be empty")
-    .isLength({ min: 5, max: 32 })
-    .withMessage("user name must be atleast 5 characters and a max of 32")
-    .isString()
-    .withMessage("user name must be a string"),
-    body("displayName").notEmpty()
-  ],
+  checkSchema(createUserValidationSchemas),
   (request, response) => {
     const result = validationResult(request);
     console.log(result);
