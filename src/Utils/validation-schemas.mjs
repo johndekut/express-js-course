@@ -1,5 +1,5 @@
- export const createUserValidationSchemas= {
-  username: {
+ export const createUserValidationSchema= {
+  userName: {
     isLength:{
       options:{
         min:5,

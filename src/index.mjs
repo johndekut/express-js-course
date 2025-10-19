@@ -1,6 +1,7 @@
 import express, { request, response } from 'express';
 import { query, validationResult, body, matchedData, checkSchema } from 'express-validator';
 const app = express();
+import { createUserValidationSchema } from './Utils/validation-schemas.mjs';
 app.use(express.json());//handles middleware
 
 const PORT = process.env.PORT || 3000;
@@ -78,17 +79,7 @@ app.use((request, response, next) => {
 
 //post adds data
 app.post('/api/users',
-
-  [
-    body('userName').notEmpty()
-    .withMessage('userName can not be empty')
-    .isLength({ min: 5, max: 32 })
-    .withMessage('User name must be 5 to 32 char long')
-    .isString()
-    .withMessage('user name must be text'),
-    body('displayName').isString()
-    .withMessage('diplay name must be a string')
-  ],
+    checkSchema(createUserValidationSchema),
   (request, response) => {
     const result = validationResult(request);
     console.log(result);
