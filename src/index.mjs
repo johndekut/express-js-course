@@ -1,10 +1,12 @@
+//This is the main/root file for the backend for express
+
 import express, { request, response } from 'express';
-import routes from './Routes/index.mjs'
+import routes from './Routes/index.mjs' //file with all the routers
 
 
 const app = express();
 app.use(express.json());//handles middleware
-app.use(routes);
+app.use(routes);// activate the file with all the routers
 
 
 const PORT = process.env.PORT || 3000;
