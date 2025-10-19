@@ -1,7 +1,5 @@
 import express, { request, response } from 'express';
-import { query, validationResult, body, matchedData, checkSchema} from 'express-validator';
-import { createUserValidationSchemas , userQuerySchema } from './Utils/validation-schemas.mjs';
-import router from './Routes/users.mjs';
+import { query, validationResult, body, matchedData, checkSchema } from 'express-validator';
 const app = express();
 app.use(express.json());//handles middleware
 
@@ -23,6 +21,7 @@ const mockUsers = ([
 
 //the function below is made to reduce redundancy in getting userId in the other methods
 const resolveUserIndexById = (request, response, next) => {
+  //const id=request.params.id; -destructured as below
   const {
     params: { id }
   } = request;
@@ -47,44 +46,60 @@ app.use(loggingMiddleware); //register the middleware globally for all routes an
 
 
 app.get('/api/users',
-  checkSchema(userQuerySchema),
+  query('filter')
+    .isString()
+    .withMessage('must be a string')
+    .notEmpty()
+    .withMessage('request can not be empty')
+    .isLength({ min: 3, max: 10 })
+    .withMessage('Must be atleast 3 to 10 characters'),
   (request, response) => {
     const result = validationResult(request); //collects all validation errors from above checks
     console.log(result);
-    
+
+
     //if te result of the errors is not empty, present it as an array
-    if(!result.isEmpty()); 
-      return response.status(400).send({errors:result.array()});
+    if (!result.isEmpty())
+      return response.status(400).send({ errors: result.array() });
+
     const { query: { filter, value } } = request;
 
     //when filters and values ar undefined
-    if (!filter && !value) return response.send(mockUsers);
     if (filter && value) return response.send(
-      mockUsers.filter((user) => user[filter]).includes(value)
+      mockUsers.filter((user) => user[filter]).includes(value())
     );
     return response.send(mockUsers);
   });
 
-app.use(loggingMiddleware, (request, response, next) => {
+app.use((request, response, next) => {
   console.log('finished logging...');
   next();
 });
 
 //post adds data
 app.post('/api/users',
-  checkSchema(createUserValidationSchemas),
+
+  [
+    body('userName').notEmpty()
+    .withMessage('userName can not be empty')
+    .isLength({ min: 5, max: 32 })
+    .withMessage('User name must be 5 to 32 char long')
+    .isString()
+    .withMessage('user name must be text'),
+    body('displayName').isString()
+    .withMessage('diplay name must be a string')
+  ],
   (request, response) => {
     const result = validationResult(request);
     console.log(result);
 
-    if(!result.isEmpty())
-      return response.status(400).send({errors:result.array()});
+    if (!result.isEmpty())//if there are errors
+      return response.status(400).send({ errors: result.array()});
 
-      const data = matchedData(request);
-      //above means, give me the request data that passed validation
+    const data = matchedData(request);
+    //above means, give me the request data that passed validation
 
-      console.log(data);
-    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...data};
+    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...data };
     //...body copies the props from incoming body into newUser
     mockUsers.push(newUser);//adds the newUser at the end of mockUsers
     return response.status(201).send(newUser);
@@ -102,28 +117,15 @@ app.get("/api/users/:id", (request, response) => {
   return response.send(findUser);
 });
 
+
+const mockProducts = ([
+  { id: crypto.randomUUID(), name: "colgate toothbrush", price: '$30', category: "hygiene" },
+  { id: crypto.randomUUID(), name: "kali kniefe", price: '$60', category: "cutlery" },
+  { id: crypto.randomUUID(), name: "plate", price: '$10', category: "utensils" }
+]);
 app.get('/api/products', (request, response) => {
-  response.send([
-    { id: crypto.randomUUID(), name: "colgate toothbrush", price: '$30', category: "hygiene" },
-    { id: crypto.randomUUID(), name: "kali kniefe", price: '$60', category: "cutlery" },
-    { id: crypto.randomUUID(), name: "plate", price: '$10', category: "utensils" }
-  ]);
+  response.send(mockProducts);
 });
-
-
-app.get(
-  '/',
-  (request, response, next) => {
-    console.log("base url 1");
-    next();
-  },
-  (request, response, next) => {
-    console.log("base url 2");
-    next();
-  },
-  (request, response,) => {
-    response.status(201).send({ msg: 'Hello' });
-  });
 
 //PUT updates the entire body -- specify even whats not changed
 app.put("/api/users/:id", resolveUserIndexById, (request, response) => {
@@ -135,10 +137,19 @@ app.put("/api/users/:id", resolveUserIndexById, (request, response) => {
 });
 
 
-app.patch('/api/users/:id', resolveUserIndexById, (request, response) => {
+app.patch('/api/users/:id', body('displayName')
+.isString().withMessage('user name must be a string')
+.notEmpty().withMessage('user name cant be empty'),
+ resolveUserIndexById,
+ (request, response) => {
+  const result = validationResult(request);
   //destructuring- could be written as below
   //const request= request.body
   //const request = request.params.id
+   if (!result.isEmpty()) {
+      return response.status(400).send({ errors: result.array() });
+    }
+
   const { body, findUserIndex } = request;
 
   //updating the user object 
