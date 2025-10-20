@@ -2,10 +2,12 @@
 
 import express, { request, response } from 'express';
 import routes from './Routes/index.mjs' //file with all the routers
+import cookieParser from 'cookie-parser';
 
 
 const app = express();
 app.use(express.json());//handles middleware
+app.use(cookieParser('secretkey'));
 app.use(routes);// activate the file with all the routers
 
 
@@ -20,6 +22,11 @@ const loggingMiddleware = (request, response, next) => {
   next(); //ensures the second command is initiated
 };
 
+app.get('/', (request, response) =>{
+  response.cookie('hello','world', {maxAge:300000, signed:true} );
+  response.send('Welcome to Adani tax dealers')
+})
+
 app.use(loggingMiddleware); //register the middleware globally for all routes and all http methods
 
 app.use((request, response, next) => {
@@ -27,8 +34,4 @@ app.use((request, response, next) => {
   next();
 });
 
-
-
-
-
-//PUT updates the entire body -- specify even whats not changed
+ 
