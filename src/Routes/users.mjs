@@ -18,6 +18,8 @@ router.get("/api/users",
     .isLength({ min: 3, max: 10 })
     .withMessage('Must be atleast 3 to 10 characters'),
   (request, response) => {
+    console.log(request.session);
+    console.log(request.session.id);
     const result = validationResult(request); //collects all validation errors from above checks
     console.log(result);
 
