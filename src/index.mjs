@@ -5,6 +5,7 @@ import routes from './Routes/index.mjs' //file with all the routers
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { mockUsers } from './Utils/constants.mjs';
+import passport from 'passport';
 
 
 const app = express();
