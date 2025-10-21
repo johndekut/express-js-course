@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { request, response, Router } from 'express';
 import { query, validationResult, matchedData, checkSchema, body } from 'express-validator';
 import { mockUsers } from '../Utils/constants.mjs';
 import { createUserValidationSchema } from '../Utils/validation-schemas.mjs';
@@ -101,6 +101,5 @@ router.delete('/api/users/:id', resolveUserIndexById, (request, response) => {
   const { findUserIndex } = request;
   mockUsers.splice(findUserIndex, 1);
   return response.sendStatus(200);
-})
-
+});
 export default router;
