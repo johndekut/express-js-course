@@ -18,6 +18,11 @@
     notEmpty:{
       errorMessage: "display name can not be empty!"
     }
+  },
+  password:{
+    notEmpty:{
+      errorMessage:"password can not be empty"
+    }
   }
 }
 

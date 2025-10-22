@@ -41,6 +41,7 @@ router.get("/api/users",
 router.get("/api/users/:id",
   resolveUserIndexById,
   (request, response) => {
+
     console.log(request.params);
     const parsedId = parseInt(request.params.id);
     if (isNaN(parsedId)) return response.status(400).send(' Bad Request. Invalid ID');
@@ -49,15 +50,26 @@ router.get("/api/users/:id",
     if (!findUser) return response.sendStatus(400);
     return response.send(findUser);
   });
-router.post('/api/users',
-  async (request, response) => {
-    const {body} = request;
 
-    const newUser = new user(body);
-    try{
-    const savedUser = await newUser.save()
-    return response.status(201).send(newUser);
-    } catch (err){
+
+router.post('/api/users',
+  checkSchema(createUserValidationSchema),
+  //the call back fn from mongo db will be asynchronous
+  async (request, response) => {
+
+    //chcck i fthere are errors in the request
+    const result= validationResult(request);
+    //if the error result is not empty, send it as an array
+    if(!result.isEmpty()) return response.send(result.array());
+    //grab validated fields using matchedData
+    const data = matchedData(request);
+    console.log(data);
+    //create a new instance of the user model-- takes the body content into the mongoose schema
+    const newUser = new user(data);
+    try {
+      const savedUser = await newUser.save()
+      return response.status(201).send(savedUser);
+    } catch (err) {
       console.log(err);
       return response.sendStatus(400);
     }
