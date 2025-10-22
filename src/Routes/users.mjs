@@ -4,6 +4,7 @@ import { mockUsers } from '../Utils/constants.mjs';
 import { createUserValidationSchema } from '../Utils/validation-schemas.mjs';
 import { resolveUserIndexById } from '../Utils/middlewares.mjs';
 import { user } from '../mongoose/schemas/userSchema.mjs';
+import { hashPassword } from '../Utils/helpers.mjs';
 
 
 const router = Router(); //router is like a mini express app that reqissters requests for a specific endpoint
@@ -63,6 +64,8 @@ router.post('/api/users',
     if(!result.isEmpty()) return response.send(result.array());
     //grab validated fields using matchedData
     const data = matchedData(request);
+    console.log(data);
+    data.password = hashPassword(data.password);
     console.log(data);
     //create a new instance of the user model-- takes the body content into the mongoose schema
     const newUser = new user(data);
