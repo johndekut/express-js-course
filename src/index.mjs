@@ -5,10 +5,18 @@ import routes from './Routes/index.mjs' //file with all the routers
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
+import mongoose from 'mongoose';
 import "./strategies/local-strategies.mjs"
 
 
-const app = express();
+
+const app = express()
+
+mongoose.connect('mongodb://localhost/express-tutorial')
+//above returns a promise, use .then
+.then(()=>{
+  console.log("connected to database")
+}).catch((err) => console.log(`Error: $err`));
 
 app.use(express.json());//handles middleware
 app.use(cookieParser('secretkey'));
