@@ -44,3 +44,18 @@ export const userQuerySchema= {
   }
 
 }
+
+export const createProductsValidationSchema = {
+name:{
+  notEmpty:{
+    errorMessage: "product name can not be empty"
+  }
+},
+price:{
+notEmpty: true,
+isNumeric:{
+  errorMessage:"price must be a number"
+},
+toFloat: true
+}
+}

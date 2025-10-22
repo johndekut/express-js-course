@@ -11,7 +11,9 @@ export const mockUsers = ([
 
 
 export const mockProducts = ([
-  { id: crypto.randomUUID(), name: "colgate toothbrush", price: '$30', category: "hygiene" },
-  { id: crypto.randomUUID(), name: "kali kniefe", price: '$60', category: "cutlery" },
-  { id: crypto.randomUUID(), name: "plate", price: '$10', category: "utensils" }
+  { id:1, name: "colgate toothbrush", price: '$30', category: "hygiene" },
+  { id: 2, name: "kali kniefe", price: '$60', category: "cutlery" },
+  { id: 3, name: "plate", price: '$10', category: "utensils" },
+  { id: 4, name: "mirror", price: '$40.5', category: "household" },
+  { id: 5, name: "spoon", price: '$5.5', category: "utensils" }
 ]);

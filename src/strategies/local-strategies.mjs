@@ -38,13 +38,8 @@ export default passport.use(
 
 
     try {
-      //below is a code that might fail
-      const findUser = mockUsers.find((user) => user.userName === userName);
-      if (!findUser) throw new Error('user not found')
-      if (findUser.password !== password)
-        throw new Error("Invalid credentials")
-      //if everything here succeeds, below fn is called
-      done(null, findUser)
+
+     
     } catch (err) {
       //err- hold info on what went wrong
       done(err, null);
