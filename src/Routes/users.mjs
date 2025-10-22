@@ -3,7 +3,7 @@ import { query, validationResult, matchedData, checkSchema, body } from 'express
 import { mockUsers } from '../Utils/constants.mjs';
 import { createUserValidationSchema } from '../Utils/validation-schemas.mjs';
 import { resolveUserIndexById } from '../Utils/middlewares.mjs';
-
+import { user } from '../mongoose/schemas/userSchema.mjs';
 
 
 const router = Router(); //router is like a mini express app that reqissters requests for a specific endpoint
@@ -50,23 +50,22 @@ router.get("/api/users/:id",
     return response.send(findUser);
   });
 router.post('/api/users',
-  checkSchema(createUserValidationSchema),
-  (request, response) => {
-    const result = validationResult(request);
-    console.log(result);
+  async (request, response) => {
+    const {body} = request;
 
-    if (!result.isEmpty())//if there are errors
-      return response.status(400).send({ errors: result.array() });
-
-    const data = matchedData(request);
-    //above means, give me the request data that passed validation
-
-    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...data };
-    //...body copies the props from incoming body into newUser
-    mockUsers.push(newUser);//adds the newUser at the end of mockUsers
+    const newUser = new user(body);
+    try{
+    const savedUser = await newUser.save()
     return response.status(201).send(newUser);
-    //return ensures the handler exits immediately after sending response
+    } catch (err){
+      console.log(err);
+      return response.sendStatus(400);
+    }
   });
+
+
+
+
 router.put("/api/users/:id", resolveUserIndexById, (request, response) => {
   //destructuring
   const { body, findUserIndex } = request;
