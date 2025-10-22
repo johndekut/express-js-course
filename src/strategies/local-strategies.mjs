@@ -4,9 +4,10 @@ import { mockUsers } from "../Utils/constants.mjs";
 
 //below isonly called once
 passport.serializeUser((user, done) =>{
-  //only store the user id, not everything belonging to the user
+ 
   console.log(`inside serialize user`);
   console.log(user)
+   //only store the user id, not everything belonging to the user
   done(null, user.id)
 });
 //deserealize is used to unpack the user object using the key
