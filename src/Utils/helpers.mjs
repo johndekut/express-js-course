@@ -11,5 +11,5 @@ export const hashPassword = (password) =>{
 }
 
 export const comparePassword = (plain, hashed) =>{
-  bcrypt.compareSync(plain, hashed)
+  return bcrypt.compareSync(plain, hashed)
 }

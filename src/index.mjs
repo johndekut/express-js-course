@@ -1,12 +1,13 @@
 //This is the main/root file for the backend for express
 
 import express, { request, response } from 'express';
-import routes from './Routes/index.mjs' //file with all the routers
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 import "./strategies/local-strategies.mjs"
+import routes from './Routes/index.mjs' //file with all the routers
 
 
 
@@ -26,7 +27,10 @@ app.use(session({
   resave: false,
   cookie: {
     maxAge: 60000 * 60
-  }
+  },
+  store: MongoStore.create({
+    client:mongoose.connection.getClient()
+  })
 }));
 
 app.use(passport.initialize());

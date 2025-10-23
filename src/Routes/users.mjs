@@ -1,9 +1,9 @@
-import { request, response, Router } from 'express';
+import {  Router } from 'express';
 import { query, validationResult, matchedData, checkSchema, body } from 'express-validator';
 import { mockUsers } from '../Utils/constants.mjs';
 import { createUserValidationSchema } from '../Utils/validation-schemas.mjs';
 import { resolveUserIndexById } from '../Utils/middlewares.mjs';
-import { user } from '../mongoose/schemas/userSchema.mjs';
+import { User } from '../mongoose/schemas/userSchema.mjs';
 import { hashPassword } from '../Utils/helpers.mjs';
 
 
@@ -33,7 +33,7 @@ router.get("/api/users",
 
     //when filters and values ar undefined
     if (filter && value) return response.send(
-      mockUsers.filter((user) => user[filter]).includes(value())
+      mockUsers.filter((user) => user[filter]).includes(value)
     );
     return response.send(mockUsers);
   });
@@ -67,8 +67,9 @@ router.post('/api/users',
     console.log(data);
     data.password = hashPassword(data.password);
     console.log(data);
+    console.log("Hashed password:", data.password)
     //create a new instance of the user model-- takes the body content into the mongoose schema
-    const newUser = new user(data);
+    const newUser = new User(data);
     try {
       const savedUser = await newUser.save()
       return response.status(201).send(savedUser);
