@@ -1,13 +1,16 @@
 //This is the main/root file for the backend for express
-
+import dotenv from 'dotenv';
+dotenv.config();
 import express, { request, response } from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
+
 //import "./strategies/local-strategies.mjs"
 import routes from './Routes/index.mjs' //file with all the routers
+import './strategies/discord-strategy.mjs'
 
 
 
@@ -78,11 +81,6 @@ app.get('/api/cart', (request, response) =>{
     return response.send(request.session.cart ?? [])
 });
 
-
-
-
-//client-secret- vGU0oAm7AAzsys1uCAHbnDwjyZFwekjD
-//redirect-url: http://localhost:3000/api/auth/discord/redirect
-//client id: 1430916868788715590
+app.get('/api/auth/discord', passport.authenticate("discord"));
 
 
