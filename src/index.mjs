@@ -28,8 +28,9 @@ app.use(session({
   cookie: {
     maxAge: 60000 * 60
   },
+  //set session store
   store: MongoStore.create({
-    client:mongoose.connection.getClient()
+  client:mongoose.connection.getClient()
   })
 }));
 
