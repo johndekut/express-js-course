@@ -6,7 +6,7 @@ import session from 'express-session';
 import passport from 'passport';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
-import "./strategies/local-strategies.mjs"
+//import "./strategies/local-strategies.mjs"
 import routes from './Routes/index.mjs' //file with all the routers
 
 
@@ -81,8 +81,8 @@ app.get('/api/cart', (request, response) =>{
 
 
 
-
-
-
+//client-secret- vGU0oAm7AAzsys1uCAHbnDwjyZFwekjD
+//redirect-url: http://localhost:3000/api/auth/discord/redirect
+//client id: 1430916868788715590
 
 
