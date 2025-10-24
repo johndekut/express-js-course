@@ -6,7 +6,7 @@ import { Strategy as DiscordStrategy } from "passport-discord";
 import { User } from "../mongoose/schemas/userSchema.mjs";
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.id); //id will be used to deserialize the user as below
 });
 
 passport.deserializeUser(async (id, done) => {
