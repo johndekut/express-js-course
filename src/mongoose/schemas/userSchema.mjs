@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
-const userSchema= new mongoose.Schema({
-  //userName: mongoose.Schema.Types.String,
+const userSchema = new mongoose.Schema({
   userName: {
-    type: mongoose.Schema.Types.String,
-    required: true ,//its mandatory
-    unique: true //wont save two users doc with the same name
-  },
-  //displayName:mongoose.Schema.Types.String,
-  displayName: {
-    type: mongoose.Schema.Types.String,
+    type: String,
     required: true,
+    unique: true,
   },
-  //password: mongoose.Schema.Types.String
-  password:{
-    type: mongoose.Schema.Types.String,
-    required: true
-  }
+  displayName: {
+    type: String,
+  },
+  password: {
+    type: String,
+  },
+  discordId: {
+    type: String,
+    unique: true,
+    sparse: true, // allows null values but still enforces uniqueness when present
+  },
 });
 
-export const User= mongoose.model('user', userSchema);
+export const User = mongoose.model("User", userSchema);

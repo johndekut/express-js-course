@@ -1,24 +1,13 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
-import { User } from "../mongoose/schemas/userSchema.mjs";
+//import { User } from "../mongoose/schemas/userSchema.mjs";
 import { comparePassword } from "../Utils/helpers.mjs";
 
-passport.serializeUser((user, done) => {
-	done(null, user.id);
-});
 
-passport.deserializeUser(async (id, done) => {
-	try {
-		const findUser = await User.findById(id);
-		if (!findUser) throw new Error("User Not Found");
-		done(null, findUser);
-	} catch (err) {
-		done(err, null);
-	}
-});
 
-export default passport.use(
- 
+
+ passport.use(
+ "local",
 	new Strategy(
     {usernameField: "userName"},
     async (userName, password, done) => {
@@ -37,3 +26,6 @@ export default passport.use(
 		}
 	})
 );
+console.log("LOADED LOCAL STRATEGIES");
+
+export default passport;

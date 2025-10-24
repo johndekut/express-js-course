@@ -14,6 +14,7 @@ import './strategies/discord-strategy.mjs'
 
 
 
+
 const app = express()
 
 mongoose.connect('mongodb://localhost/express-tutorial')
@@ -82,5 +83,9 @@ app.get('/api/cart', (request, response) =>{
 });
 
 app.get('/api/auth/discord', passport.authenticate("discord"));
+app.get('/api/auth/discord/redirect', passport.authenticate("discord"), (request, response) =>{
+  response.sendStatus(200);
+});
+
 
 
