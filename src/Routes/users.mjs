@@ -5,6 +5,7 @@ import { createUserValidationSchema } from '../Utils/validation-schemas.mjs';
 import { resolveUserIndexById } from '../Utils/middlewares.mjs';
 import { User } from '../mongoose/schemas/userSchema.mjs';
 import { hashPassword } from '../Utils/helpers.mjs';
+import {getUserByIdHandler} from '../handlers/users.mjs'
 
 
 const router = Router(); //router is like a mini express app that reqissters requests for a specific endpoint
@@ -40,7 +41,7 @@ router.get("/api/users",
 
 
 router.get("/api/users/:id",
-  resolveUserIndexById,
+  resolveUserIndexById,getUserByIdHandler,
   (request, response) => {
 
     console.log(request.params);
