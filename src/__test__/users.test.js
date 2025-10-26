@@ -1,15 +1,28 @@
-import validator from 'express-validator';
+import * as  validator from 'express-validator';
+import * as helpers from '../Utils/helpers.mjs'
 import {mockUsers} from '../Utils/constants.mjs';
 import { getUserByIdHandler, createUserHandler} from "../handlers/users.mjs";
+
 
 //mocking validation result
 jest.mock("express-validator", () =>({
   validationResult:jest.fn(() =>({
+    //below is what should be returned when the mock above is called
     isEmpty:jest.fn(() => false), //(!isEmpty)
-    array: jest.fn(() => [{msg: "invalid field"}])
+    array: jest.fn(() => [{msg: "invalid field"}])//return a fake validation error message
+  })),
+  //mocking mateched data
+  matchedData: jest.fn(() =>({
+    userName: "test",
+    password:"password",
+    displaName:"test_name"
   })),
 }));
 
+//below is mocking of aa single function
+jest.mock("../utils/helpers.mjs", () =>({
+  hashPassword:jest.fn((password) => `hashed_${password}`) //this is instant 
+}))
 const mockRequest = {
   //request in the original function sends the user id
  params:{
@@ -51,8 +64,20 @@ describe('create new user', () =>{
   it('Should return a status of 400 if errors are present', async () =>{
     await createUserHandler(mockRequest, mockResponse)
      //assertion for validation result
-  expect(validator.validationResult).toHaveBeenCalledTimes(1);
-  expect(validator.validationResult).toHaveBeenLastCalledWith
+  expect(validator.validationResult).toHaveBeenCalled();
+  expect(validator.validationResult).toHaveBeenLastCalledWith(mockRequest);
+  //expect(mockResponse.status).toHaveBeenCalledWith(400);
+  expect(mockResponse.send).toHaveBeenCalledWith([ {msg:"invalid field"}]);
   });
+  it('should return status of 201  and the user created', async() =>{
+    jest.spyOn(validator,'validationResult').mockImplementationOnce(() =>({
+      //temporarily overide prev mock so validation passes
+      isEmpty:jest.fn(() =>true),
+    }))
+    await createUserHandler(mockRequest, mockResponse);
+    expect(validator.matchedData).toHaveBeenCalledWith(mockRequest);
+    expect(helpers.hashPassword).toHaveBeenCalledWith("password");
+    expect(helpers.hashPassword).toHaveReturnedWith("hashed_password");
+  })
  
 })
