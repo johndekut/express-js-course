@@ -14,7 +14,7 @@ export const getUserByIdHandler= (request, response) => {
     if (!findUser) return response.sendStatus(400);
     return response.send(findUser);
   }
-
+  //creating a handler for creating users
   export const createUserHandler =  async (request, response) => {
       //chcck i fthere are errors in the request
       const result= validationResult(request);

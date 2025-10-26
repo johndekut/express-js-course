@@ -1,4 +1,4 @@
-
+import validator from 'express-validator';
 import {mockUsers} from '../Utils/constants.mjs';
 import { getUserByIdHandler, createUserHandler} from "../handlers/users.mjs";
 
@@ -50,5 +50,8 @@ describe('create new user', () =>{
   const mockRequest = {};
   it('Should return a status of 400 if errors are present', async () =>{
     await createUserHandler(mockRequest, mockResponse)
-  })
+     //assertion for validation result
+  expect(validator.validationResult).toHaveBeenCalledTimes(1);
+  });
+ 
 })
