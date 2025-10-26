@@ -5,7 +5,8 @@ import { createUserValidationSchema } from '../Utils/validation-schemas.mjs';
 import { resolveUserIndexById } from '../Utils/middlewares.mjs';
 import { User } from '../mongoose/schemas/userSchema.mjs';
 import { hashPassword } from '../Utils/helpers.mjs';
-import {getUserByIdHandler} from '../handlers/users.mjs'
+import {getUserByIdHandler} from '../handlers/users.mjs';
+import { createUserHandler } from '../handlers/users.mjs';
 
 
 const router = Router(); //router is like a mini express app that reqissters requests for a specific endpoint
@@ -56,6 +57,7 @@ router.get("/api/users/:id",
 
 router.post('/api/users',
   checkSchema(createUserValidationSchema),
+  createUserHandler,
   //the call back fn from mongo db will be asynchronous
   async (request, response) => {
 

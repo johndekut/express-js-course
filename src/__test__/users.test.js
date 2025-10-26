@@ -1,7 +1,14 @@
+
 import {mockUsers} from '../Utils/constants.mjs';
-import { getUserByIdHandler } from "../handlers/users.mjs";
+import { getUserByIdHandler, createUserHandler} from "../handlers/users.mjs";
 
-
+//mocking validation result
+jest.mock("express-validator", () =>({
+  validationResult:jest.fn(() =>({
+    isEmpty:jest.fn(() => false), //(!isEmpty)
+    array: jest.fn(() => [{msg: "invalid field"}])
+  })),
+}));
 
 const mockRequest = {
   //request in the original function sends the user id
@@ -12,7 +19,8 @@ const mockResponse =  {
   //response in the main function sends back a sttatus
   //create a mock function for that as below not the actual funtion
   sendStatus: jest.fn(),
-  send:jest.fn()
+  send:jest.fn(),
+  status: jest.fn(() =>{mockResponse})
 };
 
 describe('get users', () =>{
@@ -36,4 +44,11 @@ describe('get users', () =>{
     expect(mockResponse.send).not.toHaveBeenCalled();
   });
 
+});
+//anything initialized with describe is called a test suite
+describe('create new user', () =>{
+  const mockRequest = {};
+  it('Should return a status of 400 if errors are present', async () =>{
+    await createUserHandler(mockRequest, mockResponse)
+  })
 })
