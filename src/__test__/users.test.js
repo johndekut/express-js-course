@@ -52,6 +52,7 @@ describe('create new user', () =>{
     await createUserHandler(mockRequest, mockResponse)
      //assertion for validation result
   expect(validator.validationResult).toHaveBeenCalledTimes(1);
+  expect(validator.validationResult).toHaveBeenLastCalledWith
   });
  
 })
