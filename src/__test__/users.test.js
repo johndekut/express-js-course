@@ -4,7 +4,7 @@ import { getUserByIdHandler } from "../handlers/users.mjs";
 
 
 const mockRequest = {
-  //request in the original function sends the userindex
+  //request in the original function sends the user id
  params:{
   id: 1
  }};
@@ -16,6 +16,9 @@ const mockResponse =  {
 };
 
 describe('get users', () =>{
+  beforeEach(() =>{
+    jest.clearAllMocks();
+  })
   it ('should get user by id',() =>{
     getUserByIdHandler(mockRequest, mockResponse);
     expect(mockResponse.send).toHaveBeenCalled();
