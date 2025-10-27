@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:e2e": "jest --testPathPattern=src/e2e",
     "start-dev": "nodemon ./src/index.mjs",
     "start": "node ./src/index.mjs"
   },
@@ -31,7 +32,8 @@
     "@babel/preset-env": "^7.28.5",
     "@types/jest": "^30.0.0",
     "jest": "^30.2.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   },
   "type": "module"
 }
