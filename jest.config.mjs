@@ -15,7 +15,7 @@ const config = {
   // cacheDirectory: "C:\\Users\\john muchiri\\AppData\\Local\\Temp\\jest",
 
   // Automatically clear mock calls, instances, contexts and results before every test
-  //clearMocks: true,
+  clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
   // collectCoverage: false,
@@ -107,7 +107,7 @@ const config = {
   // reporters: undefined,
 
   // Automatically reset mock state before every test
-  // resetMocks: false,
+   //resetMocks: false,
 
   // Reset the module registry before running each individual test
   // resetModules: false,

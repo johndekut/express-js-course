@@ -64,7 +64,7 @@ router.post('/api/users',
     //chcck i fthere are errors in the request
     const result= validationResult(request);
     //if the error result is not empty, send it as an array
-    if(!result.isEmpty()) return response.send(result.array());
+    if(!result.isEmpty()) return response.status(400).send(result.array());
     //grab validated fields using matchedData
     const data = matchedData(request);
     console.log(data);
