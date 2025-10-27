@@ -5,6 +5,7 @@ import passport from 'passport';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import routes from "./Routes/index.mjs"
+import './strategies/local-strategies.mjs'
 
 
 export function createApp() {

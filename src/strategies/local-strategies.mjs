@@ -1,10 +1,27 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
-//import { User } from "../mongoose/schemas/userSchema.mjs";
+import { User } from "../mongoose/schemas/userSchema.mjs";
 import { comparePassword } from "../Utils/helpers.mjs";
 
 
+passport.serializeUser((user, done) => {
+	console.log('inside serializeUser function')
+	done(null, user.id); //id will be used to deserialize the user as below
+	console.log(user.id)
+});
 
+passport.deserializeUser(async (id, done) => {
+	console.log('inside deserializeUser function')
+
+	try {
+		const findUser = await User.findById(id);
+		if (!findUser) return done(null, false);
+		done(null, findUser);
+		console.log(findUser.id)
+	} catch (err) {
+		done(err, null);
+	}
+});
 
  passport.use(
  "local",
@@ -13,7 +30,6 @@ import { comparePassword } from "../Utils/helpers.mjs";
     async (userName, password, done) => {
   
 		try {
-      console.log(password);
       //find user using the userName
 			const findUser = await User.findOne({ userName });
       console.log("Query result:", findUser);
