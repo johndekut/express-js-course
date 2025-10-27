@@ -65,6 +65,11 @@ export function createApp() {
     console.log(request.user)
     response.sendStatus(200);
   });
+  app.get("/api/auth/status", (request, response) => {
+	return request.user 
+	? response.send(request.user) 
+	: response.sendStatus(401);
+});
 
     return app;
 }

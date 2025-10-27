@@ -6,21 +6,12 @@ import "./strategies/local-strategies.mjs"
 import { createApp } from './createApp.mjs';
 
 //connnect to the db then initialize the app - order matters
-try{
 mongoose
-.connect('mongodb://localhost/express-tutorial')
-//above returns a promise, use .then
-.then(()=> console.log("connected to database"));
-const app = createApp();
+  .connect('mongodb://localhost/express-tutorial')
+  .then(() => console.log('connected to database'))
+  .catch((err) => console.log(`Error: ${err}`));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Running on port ${PORT}`);
-})
-} catch(err) {
-console.log(`Error: $err`);
-}
-//.catch((err) => console.log(`Error: $err`));
+  const app = createApp();
 
 
 

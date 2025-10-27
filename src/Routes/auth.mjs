@@ -13,7 +13,9 @@ router.post(
 );
 
 router.get("/api/auth/status", (request, response) => {
-	return request.user ? response.send(request.user) : response.sendStatus(401);
+	return request.user 
+	? response.send(request.user) 
+	: response.sendStatus(401);
 });
 
 router.post("/api/auth/logout", (request, response) => {
