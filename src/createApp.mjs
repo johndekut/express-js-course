@@ -7,7 +7,7 @@ import MongoStore from 'connect-mongo';
 import routes from "./Routes/index.mjs"
 import './strategies/local-strategies.mjs'
 
-
+//craete and configure the express app --assemble the server
 export function createApp() {
   const app= express();
   app.use(express.json());//handles middleware
